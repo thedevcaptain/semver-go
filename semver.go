@@ -5,8 +5,6 @@ import (
 	"strings"
 )
 
-var Version string = "1.0"
-
 func Compare(a, b string) int {
 	result := 0
 	// split the string in arrays
