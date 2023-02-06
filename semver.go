@@ -1,11 +1,24 @@
 package semver
 
 import (
+	"errors"
+	"regexp"
 	"strconv"
 	"strings"
 )
 
-func Compare(a, b string) int {
+func Compare(a, b string) (int, error) {
+	if len(strings.TrimSpace(a)) == 0 || len(strings.TrimSpace(b)) == 0 {
+		return 0, errors.New("empty string")
+	}
+	resRegA, errRegA := regexp.MatchString(`^(\*|\d+(\.\d+)*(\.\*)?)$`, a)
+	resRegB, errRegB := regexp.MatchString(`^(\*|\d+(\.\d+)*(\.\*)?)$`, b)
+	if errRegA != nil || errRegB != nil {
+		return 0, errors.New("error in input validation")
+	}
+	if !resRegA || !resRegB {
+		return 0, errors.New("invalid input version")
+	}
 	result := 0
 	// split the string in arrays
 	partsA := strings.Split(a, ".")
@@ -28,5 +41,5 @@ func Compare(a, b string) int {
 		i++
 	}
 	// compare the two arrays
-	return result
+	return result, nil
 }
